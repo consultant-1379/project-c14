@@ -1,0 +1,245 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Cloud Native Maturity Matrix Tool</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+	<div id="container">
+		<div class="wrapper">
+			Graph ID: <span class="bald" th:text="${GraphId}"> </span>
+		</div>
+		<canvas id="matrixGraph" width="950" height="645"></canvas>
+	</div>
+
+	<script type="text/javascript" th:inline="javascript">
+		var canvas;
+		var canvasContext;
+
+		// Needs to be passed in as a Model
+		// var points = [2.3, 2, 2, 2.8, 2.5, 2.5, 2.2, 2.2, 2];
+		var points = [[${LongValues}]]
+
+		// Could be passed as a model since it's already written in java
+		var mapping = {
+			1: [[${Culture}]],
+			2: [[${Product}]],
+			3: [[${Team}]],
+			4: [[${Process}]],
+			5: [[${Architecture}]],
+			6: [[${Maintenance}]],
+			7: [[${Delivery}]],
+			8: [[${Provisioning}]],
+			9: [[${Infrastructure}]]
+		}
+
+		var legend = {
+			1: [
+			{x: 40, y: 60},
+			{x: 40, y: 170},
+			{x: 27, y: 180},
+			{x: 40, y: 190},
+			{x: 40, y: 300},
+			"#2abad9"],
+			2: [
+			{x: 40, y: 320},
+			{x: 40, y: 397.5},
+			{x: 27, y: 407.5},
+			{x: 40, y: 417.5},
+			{x: 40, y: 495},
+			"#546ab1"],
+			3: [
+			{x: 40, y: 515},
+			{x: 40, y: 560},
+			{x: 27, y: 570},
+			{x: 40, y: 580},
+			{x: 40, y: 625},
+			"#a4a4a4"]
+		}
+
+		window.onload = function() {
+			canvas = document.getElementById("matrixGraph");
+			canvasContext = canvas.getContext("2d");
+			drawBluSection();
+			drawRedSection(points);
+			drawBlueLine(points);
+			drawLine(725, 50, 725, canvas.height - 10, "red", 3, [5,3]);
+			drawHeader();
+			drawLine(50, 50, canvas.width, 50, "blue", 2);
+			drawHorizontal();
+			drawPointLabels();
+			drawLegend();
+			rotateText("ORGANIZATION", 15, 310, "bold 14px Arial", 260);
+			rotateText("DEVELOPMENT", 15, 505, "bold 14px Arial", 195);
+			rotateText("INFRASTRUCTURE", 15, 635, "bold 14px Arial", 130);
+		}
+
+		// Draws the blue area in the graph (drawn as one big square)
+		// later, portion gets covered by pink section
+		function drawBluSection() {
+			canvasContext.fillStyle = "#d9dded";
+			canvasContext.fillRect(200, 50, 525, 585);
+			canvasContext.fillStyle = "black";
+		}
+
+		// Draws the pick section based on points passes in Model
+		// Covers part of the blue section to make it not look
+		// like a square
+		function drawRedSection(pts) {
+			canvasContext.fillStyle = "#fad6ea";
+
+			canvasContext.beginPath();
+			canvasContext.moveTo(725, 50);
+			canvasContext.lineTo(275 + 150 * (pts[0] - 1), 50);
+
+			for (var i = 0; i < 9; i++){
+			    canvasContext.lineTo(275 + 150 * (pts[i] - 1), 50 + 65 * (i+1));
+			}
+
+			canvasContext.lineTo(725, 635);
+			canvasContext.closePath();
+			canvasContext.fill();
+			canvasContext.fillStyle = "black";
+
+		}
+
+		// Draws the splitting line based on points paassed in Model
+		function drawBlueLine(pts) {
+			canvasContext.strokeStyle = "blue";
+			canvasContext.lineWidth = 3;
+
+			canvasContext.beginPath();
+			canvasContext.setLineDash([5,3]);
+
+			canvasContext.moveTo(275 + 150 * (pts[0] - 1), 50);
+
+			for (var i = 0; i < 9; i++){
+			    canvasContext.lineTo(275 + 150 * (pts[i] - 1), 50 + 65 * (i+1));
+			}
+
+			canvasContext.stroke();
+			canvasContext.setLineDash([]);
+			canvasContext.lineWidth = 1;
+		}
+
+		// Draws text across the header
+		function drawHeader() {
+			var xLabel = ["Stage", "NO PROCESS", "WATERFALL", "AGILE", "CLOUD NATIVE", "NEXT"];
+			var spacing = 150;
+			for( var i = 0; i < xLabel.length; i++) {
+				if (i == 0) drawTextMiddleX(xLabel[i], 60, 35, "13px Arial");
+				else drawTextMiddleX(xLabel[i], 50 + spacing * i, 35, "bold 15px Arial", 150);
+			}
+		}
+
+		// Draws y label text, line separator and circle points
+		function drawHorizontal() {
+			var ylabel = ["CULTURE", "PROD/SERVICE", "TEAM", "PROCESS", "ARCHITECTURE", "MAINTENANCE", "DELIVERY", "PROVISIONING", "INFRASTRUCTURE"];
+
+			for( var i = 0; i < ylabel.length; i++){
+				drawLine(50, 115 + 65 * i, canvas.width - 75, 115 + 65 * i, "black", 0.5, [5,3]);
+				drawTextMiddleX(ylabel[i], 60, 100 + 65 * i, "bold 15px  Arial");
+
+				for (j = 0; j < 5; j++) {
+					drawCircle(j * 150 + 275, 115 + 65 * i, 6, "white", 4, true);
+
+					if (j == 3) drawCircle(j * 150 + 275, 115 + 65 * i, 7, "red", 4);
+					else drawCircle(j * 150 + 275, 115 + 65 * i, 5, "black", 2);
+				}
+			}
+		}
+
+		// Draws text above each circle point
+		function drawPointLabels() {
+			var spacing = 150;
+
+			for( var i = 0; i < 9; i++ ) {
+				for ( var j = 0; j < mapping[i + 1].length; j++ ) {
+					if (i == 7 && j == 2) drawTextMiddleX("Config, management.", 50 + spacing * ( j + 1 ), 100 + 65 * i, "bold 10px  Arial", 150);
+					else drawTextMiddleX( mapping[i + 1][j], 50 + spacing * ( j + 1 ), 100 + 65 * i, "bold 10px  Arial", 150);
+				}
+			}
+		}
+
+		// Draws legend on y axis
+		function drawLegend() {
+			canvasContext.lineWidth = 1;
+
+			for ( var j = 1; j < 4; j++ ) {
+				canvasContext.strokeStyle = legend[j][5];
+				canvasContext.beginPath();
+
+				canvasContext.moveTo(legend[j][0].x, legend[j][0].y);
+				for (var i = 1; i < 5; i++) {
+					canvasContext.lineTo(legend[j][i].x, legend[j][i].y);
+				}
+
+				canvasContext.stroke();
+			}
+		}
+
+		// Function to draw outline/fill a circle
+		function drawCircle(x, y, radius, color, width, fill=false) {
+			canvasContext.beginPath();
+			canvasContext.arc(x, y, radius, 0, 2 * Math.PI, false);
+			canvasContext.lineWidth = width;
+
+			if (fill){
+				canvasContext.fillStyle = color;
+				canvasContext.fill();
+			} else {
+				canvasContext.strokeStyle = color;
+				canvasContext.stroke();
+			}
+
+			canvasContext.fillStyle = "black";
+		}
+
+		// Function to draw a line on canvas with options
+		function drawLine(startX, startY, endX, endY, color, strokeWidth, dashed=null) {
+			canvasContext.strokeStyle = color;
+			canvasContext.lineWidth = strokeWidth;
+
+			canvasContext.beginPath();
+
+			canvasContext.setLineDash([]);
+			if (dashed) canvasContext.setLineDash(dashed);
+
+			canvasContext.moveTo(startX, startY);
+			canvasContext.lineTo(endX, endY);
+
+			canvasContext.stroke();
+			canvasContext.setLineDash([]);
+			canvasContext.lineWidth = 1;
+		}
+
+		// Function to draw text with an option to center in a cell
+		function drawTextMiddleX(text, x, y, opt, width=false) {
+			canvasContext.font = opt;
+			var xOffset = 0;
+
+			if (width) {
+				textWidth = canvasContext.measureText(text).width;
+				xOffset = (width - textWidth) / 2;
+			}
+
+			canvasContext.fillText(text, x + xOffset, y);
+		}
+
+		function rotateText(text, x, y, opt, width=false) {
+			canvasContext.save();
+			canvasContext.font = opt;
+			canvasContext.fillStyle = "black";
+			var textWidth = canvasContext.measureText(text).width;
+			var yOffset = (width - textWidth) / 2;
+
+			canvasContext.translate( x, y - yOffset );
+			canvasContext.rotate( - (Math.PI / 2) );
+
+			canvasContext.fillText(text, 0, 0);
+			canvasContext.restore();
+		}
+	</script>
+</body>
+</html>

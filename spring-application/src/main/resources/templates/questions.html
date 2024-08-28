@@ -1,0 +1,50 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Cloud Native Maturity Matrix Tool</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<div id="container">
+		<div id="header_wrapper">
+			<div class="header_part">
+				<div class="header_cell">Stage</div>
+				<div class="header_cell center bald">NO PROCESS</div>
+				<div class="header_cell center bald">WATERFALL</div>
+				<div class="header_cell center bald">AGILE</div>
+				<div class="header_cell center bald">CLOUD NATIVE</div>
+				<div class="header_cell center bald">NEXT</div>
+			</div>
+			<div id="header_last" class="header_part">
+				<div class="header_cell bald middle" th:text="${QuestionName}"></div>
+				<div class="header_cell center dot" th:each="headerTitle: ${Header}" th:text="${headerTitle}"></div>
+			</div>
+		</div>
+		<div class="wrapper">
+			<div id="txt_container_header" class="opt_container_part">In our company ...</div>
+			<div id="radio_btn_header" class="opt_container_part radio_header">
+				<label>Yes</label>
+				<label>No</label>
+			</div>
+		</div>
+		<form th:action="@{${Redirect}}" th:object="${Response}" method="get">
+			<div class="wrapper" th:each="question,iter : ${Questions}">
+				<div id="rank_container" class="opt_container_part" th:text="${iter.index} + 1 + '.'"></div>
+				<div id="txt_container" class="opt_container_part" th:text="${question}"></div>
+				<div id="radio_btn_container" class="opt_container_part">
+					<label>
+						<input class="radio_btn btn_tick" type="radio" value="1" th:field="*{response__${iter.index + 1}__}" required>
+					</label>
+					<label>
+						<input class="radio_btn btn_cross" type="radio" value="0" th:field="*{response__${iter.index + 1}__}" required>
+					</label>
+				</div>
+			</div>
+			<div class="wrapper">
+				<button id="submit_btn" type="submit">Next Question</button>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

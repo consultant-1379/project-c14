@@ -1,0 +1,23 @@
+spring:
+  profiles.active: prod
+---
+spring:
+  config:
+    activate:
+      on-profile: dev-win
+resources:
+  storeFolderPath: C:\\SpringBootDev
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+resources:
+  storeFolderPath: /pStore/graphs
+---
+spring:
+  config:
+    activate:
+      on-profile: dev-linux
+resources:
+  storeFolderPath: /home/user/Documents/projects/project-c14/pStore/graphs

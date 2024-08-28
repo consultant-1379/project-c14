@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+#header_wrapper {
+    width: -moz-fit-content;
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: 60px;
+    margin-top: 30px;
+}
+
+.header_part {
+    position: relative;
+    display: table;
+    border-bottom: 2px solid blue;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#header_last {
+    border-bottom: 1px dashed black;
+}
+
+.header_cell {
+    width: 150px;
+    display: table-cell;
+    position: relative;
+}
+
+.bald {
+    font-weight: bold;
+}
+
+.center {
+    text-align: center;
+}
+
+.middle {
+    vertical-align: middle;
+}
+
+#container {
+    height: 100%;
+    width: 100%;
+}
+
+.wrapper {
+    position: relative;
+    display: table;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    font-size: 25px;
+}
+
+.wrapper:last-child {
+    margin-bottom: 0;
+}
+
+.opt_container_part {
+    width: 100px;
+    height: ;
+    display: table-cell;
+}
+
+#txt_container {
+    width: 600px;
+}
+
+#txt_container_header {
+    width: 700px;
+    height: 60px;
+}
+
+.radio_btn {
+    width: 25px;
+    height: 25px;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 2ps solid white;
+}
+
+.radio_btn:checked {
+    background: black;
+    outline: 0;
+}
+
+label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+label:nth-child(2) {
+    margin-left: 20px;
+}
+
+.btn_cross {
+    background-image: url("../images/cross.png");
+}
+
+.btn_tick {
+    background-image: url("../images/tick.png");
+}
+
+#radio_btn_container {
+    width: 200px;
+    vertical-align: middle;
+    text-align: center;
+
+}
+
+#radio_btn_header {
+    width: 200px;
+    vertical-align: bottom;
+    text-align: center;
+
+}
+
+.dot::after {
+    content: "";
+    background-color: white;
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid blue;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -17px;
+    left: 66px;
+    z-index: 9;
+}
+
+.dot:nth-child(5)::after {
+    border: 1.5px solid red;
+}
+
+#submit_btn {
+    margin: 0 auto;
+}
+
+#matrixGraph {
+    display: block;
+    margin: 0 auto;
+}

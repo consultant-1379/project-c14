@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Cloud Native Maturity Matrix Tool</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<style type="text/css">
+		a {
+			display: block;
+			width: 100px;
+			height: 55px;
+			text-decoration: none;
+			color: white;
+			background-color: #90e0ef;
+			border-radius: 5px;
+    		text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div class="wrapper">
+			<a id="start_btn" href="/initQuestion">Start</a>
+		</div>
+		<div class="wrapper">OR</div>
+		<div class="wrapper">
+			<form action="/loadGraph/">
+			    <label for="graphID">Enter GraphID</label>
+			    <input id="graphID" type="text" name="graphID">
+			    <input type="submit" value="Send">
+			</form>
+		</div>
+	</div>
+</body>
+</html>
